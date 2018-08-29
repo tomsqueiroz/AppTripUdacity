@@ -9,12 +9,15 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.example.tom.apptripudacity.Activities.Adapters.ResultsAdapter;
 import com.example.tom.apptripudacity.Activities.Models.Example;
 import com.example.tom.apptripudacity.Activities.Models.Result;
 import com.example.tom.apptripudacity.R;
@@ -51,15 +54,24 @@ import okhttp3.ResponseBody;
  * Created by tom on 26/08/18.
  */
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ResultsAdapter.ResultsAdapterOnClickHandler{
 
     protected GeoDataClient mGeoDataClient;
     private OkHttpClient httpClient;
     public final String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=AIzaSyAlUvgTV9PolnqpyWUQpMd296BGOJQBY3E&location=-15.756740,-47.868560&radius=5000&keyword=hospital";
     private String resposta;
     private List<Result> results;
-    Bitmap bitmap = null;
+    private Bitmap bitmap = null;
+    private List<Bitmap> bitmapList = null;
+    private RecyclerView mRecycleView;
+    private ResultsAdapter mResultsAdapter;
+    private LinearLayoutManager layoutManager;
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -77,6 +89,11 @@ public class MainActivity extends AppCompatActivity {
         mGeoDataClient = Places.getGeoDataClient(this, null);
         httpClient = new OkHttpClient();
         results = new ArrayList<>();
+        mRecycleView = (RecyclerView) findViewById(R.id.rv_main);
+        layoutManager = new LinearLayoutManager(this);
+        mRecycleView.setLayoutManager(layoutManager);
+        mResultsAdapter = new ResultsAdapter(this, this);
+        mRecycleView.setAdapter(mResultsAdapter);
 
         try {
            getPlaces(url);
@@ -147,12 +164,20 @@ public class MainActivity extends AppCompatActivity {
      }
 
      public void inflateRecycleView(){
-        List<Bitmap> bitmapList = new ArrayList<>();
+        bitmapList = new ArrayList<>();
         Bitmap bitmap = null;
         for (Result result : results){
             bitmap = getPhotos(result.getPlaceId());
             bitmapList.add(bitmap);
         }
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mResultsAdapter.setBitmapList(bitmapList);
+            }
+        });
+
         //com a lista de fotos, soh inflar a rv
          //notifydatasetchanged
 
@@ -190,9 +215,15 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
                 }
+                photoMetadataBuffer.release();
                 bitmap = null;
             }
         });
         return bitmap;
+    }
+
+    @Override
+    public void onClick(int position) {
+
     }
 }
