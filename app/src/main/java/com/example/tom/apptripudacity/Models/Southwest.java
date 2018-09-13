@@ -1,4 +1,4 @@
-package com.example.tom.apptripudacity.Activities.Models;
+package com.example.tom.apptripudacity.Models;
 
 /**
  * Created by tom on 28/08/18.
@@ -7,7 +7,9 @@ package com.example.tom.apptripudacity.Activities.Models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Southwest {
+import java.io.Serializable;
+
+public class Southwest implements Serializable {
 
     @SerializedName("lat")
     @Expose

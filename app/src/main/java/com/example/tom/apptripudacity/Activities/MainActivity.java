@@ -1,30 +1,24 @@
 package com.example.tom.apptripudacity.Activities;
 
-import android.app.ActionBar;
-import android.app.SearchManager;
-import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
+import android.widget.Toast;
 
-import com.example.tom.apptripudacity.Activities.Adapters.ResultsAdapter;
-import com.example.tom.apptripudacity.Activities.Models.Example;
-import com.example.tom.apptripudacity.Activities.Models.Result;
+import com.example.tom.apptripudacity.Adapters.ResultsAdapter;
+import com.example.tom.apptripudacity.Interfaces.GetDataService;
+import com.example.tom.apptripudacity.Models.Example;
+import com.example.tom.apptripudacity.Models.Result;
+import com.example.tom.apptripudacity.NetworkUtils.RetrofitClient;
 import com.example.tom.apptripudacity.R;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.GeoDataClient;
-import com.google.android.gms.location.places.PlaceDetectionClient;
 import com.google.android.gms.location.places.PlacePhotoMetadata;
 import com.google.android.gms.location.places.PlacePhotoMetadataBuffer;
 import com.google.android.gms.location.places.PlacePhotoMetadataResponse;
@@ -40,32 +34,29 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Headers;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 
 /**
  * Created by tom on 26/08/18.
  */
 
+
+
 public class MainActivity extends AppCompatActivity implements ResultsAdapter.ResultsAdapterOnClickHandler{
 
-    protected GeoDataClient mGeoDataClient;
-    private OkHttpClient httpClient;
-    public final String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=AIzaSyAlUvgTV9PolnqpyWUQpMd296BGOJQBY3E&location=-15.756740,-47.868560&radius=5000&keyword=hospital";
-    private String resposta;
-    private List<Result> results;
-    private Bitmap bitmap = null;
-    private List<Bitmap> bitmapList = null;
     private RecyclerView mRecycleView;
     private ResultsAdapter mResultsAdapter;
     private LinearLayoutManager layoutManager;
+    private List<Result> results;
 
     @Override
     protected void onStop() {
@@ -76,114 +67,40 @@ public class MainActivity extends AppCompatActivity implements ResultsAdapter.Re
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.mainactivity);
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        setSupportActionBar(myToolbar);
+        setContentView(R.layout.main_activity);
         getSupportActionBar().setTitle(null);
 
 
-        SearchView searchView = (SearchView) findViewById(R.id.searchView);
-        SearchManager sm = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        searchView.setSearchableInfo(sm.getSearchableInfo(getComponentName()));
-
-        mGeoDataClient = Places.getGeoDataClient(this, null);
-        httpClient = new OkHttpClient();
-        results = new ArrayList<>();
         mRecycleView = (RecyclerView) findViewById(R.id.rv_main);
         layoutManager = new LinearLayoutManager(this);
         mRecycleView.setLayoutManager(layoutManager);
         mResultsAdapter = new ResultsAdapter(this, this);
         mRecycleView.setAdapter(mResultsAdapter);
 
-        try {
-           getPlaces(url);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+        GetDataService service = RetrofitClient.getRetrofitInstance().create(GetDataService.class);
+        Map<String,String> map = new HashMap<>();
+        map.put("location", "-15.765079,-47.869921");
+        map.put("radius", "5000");
+        //map.put("keyword", "hospital");
 
 
-        //getPhotos();
-
-
-
-
-    }
-
-    private void getPlaces(final String url) throws IOException {
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
-
-        httpClient.newCall(request).enqueue(new Callback() {
+        Call<Example> call = service.getNearbyPlaces(map);
+        call.enqueue(new Callback<Example>() {
             @Override
-            public void onFailure(Call call, IOException e) {
+            public void onResponse(Call<Example> call, Response<Example> response) {
+                results = response.body().getResults();
+                mResultsAdapter.setResultList(results);
 
             }
 
-
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                JSONObject json = null;
-                String responseBodyString;
-                try (ResponseBody responseBody = response.body()) {
-                    if (!response.isSuccessful())
-                        throw new IOException("Unexpected code " + response);
+            public void onFailure(Call<Example> call, Throwable t) {
 
-                    responseBodyString = responseBody.string();
-
-                    try {
-                        json = new JSONObject(responseBodyString);
-                        String nextPageToken  = parseJson(json.toString());
-                        if(nextPageToken != null){
-                            getPlaces(url.concat("&pagetoken=" + nextPageToken));
-                        }else{  //significa que todos os resultados já estão na lista, prontos para inflar o recyclerview
-                            inflateRecycleView();
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
-    }
-
-    //metodo retorna token para proxima pagina da api
-    public String parseJson(String json){
-        Gson gson = new GsonBuilder().create();
-        Example example = null;
-
-        if(json != null){
-            example = gson.fromJson(json, Example.class);
-        }
-        if(example != null) {
-            System.out.println(example.toString());
-            results.addAll(example.getResults());
-            return example.getNextPageToken();
-        }
-        return null;
-     }
-
-     public void inflateRecycleView(){
-        bitmapList = new ArrayList<>();
-        Bitmap bitmap = null;
-        for (Result result : results){
-            bitmap = getPhotos(result.getPlaceId());
-            bitmapList.add(bitmap);
-        }
-
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mResultsAdapter.setBitmapList(bitmapList);
             }
         });
 
-        //com a lista de fotos, soh inflar a rv
-         //notifydatasetchanged
-
-
-     }
-
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -193,37 +110,27 @@ public class MainActivity extends AppCompatActivity implements ResultsAdapter.Re
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        return super.onOptionsItemSelected(item);
+
+        switch(item.getItemId()){
+            case R.id.action_settings:
+                Intent intent = new Intent(this, PreferenceActivity.class);
+                startActivity(intent);
+
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
     }
 
-    private Bitmap getPhotos(String placeId) {
-        final Task<PlacePhotoMetadataResponse> photoMetadataResponse = mGeoDataClient.getPlacePhotos(placeId);
-        photoMetadataResponse.addOnCompleteListener(new OnCompleteListener<PlacePhotoMetadataResponse>() {
-            @Override
-            public void onComplete(@NonNull Task<PlacePhotoMetadataResponse> task) {
-
-                PlacePhotoMetadataResponse photos = task.getResult();
-                PlacePhotoMetadataBuffer photoMetadataBuffer = photos.getPhotoMetadata();
-                if (photoMetadataBuffer.getCount() != 0) {
-                    PlacePhotoMetadata photoMetadata = photoMetadataBuffer.get(0);
-                    Task<PlacePhotoResponse> photoResponse = mGeoDataClient.getPhoto(photoMetadata);
-                    photoResponse.addOnCompleteListener(new OnCompleteListener<PlacePhotoResponse>() {
-                        @Override
-                        public void onComplete(@NonNull Task<PlacePhotoResponse> task) {
-                            PlacePhotoResponse photo = task.getResult();
-                             bitmap = photo.getBitmap();
-                        }
-                    });
-                }
-                photoMetadataBuffer.release();
-                bitmap = null;
-            }
-        });
-        return bitmap;
-    }
 
     @Override
     public void onClick(int position) {
-
+        if(results!=null){
+            Intent i = new Intent(this, DetailsActivity.class);
+            Bundle b = new Bundle();
+            b.putSerializable("resultado", results.get(position));
+            i.putExtra("resultado", b);
+            startActivity(i);
+        }
     }
 }

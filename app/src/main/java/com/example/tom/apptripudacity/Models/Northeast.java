@@ -1,9 +1,12 @@
-package com.example.tom.apptripudacity.Activities.Models;
+package com.example.tom.apptripudacity.Models;
+
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Location {
+import java.io.Serializable;
+
+public class Northeast implements Serializable {
 
     @SerializedName("lat")
     @Expose
@@ -29,3 +32,4 @@ public class Location {
     }
 
 }
+

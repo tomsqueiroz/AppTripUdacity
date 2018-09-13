@@ -1,9 +1,11 @@
-package com.example.tom.apptripudacity.Activities.Models;
+package com.example.tom.apptripudacity.Models;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Viewport {
+import java.io.Serializable;
+
+public class Viewport implements Serializable {
 
     @SerializedName("northeast")
     @Expose

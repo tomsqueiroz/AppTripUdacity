@@ -9,6 +9,12 @@
 
     </item>
 
-
+    <item android:id="@+id/search"
+        android:title="@string/search_title"
+        app:queryHint="@string/search_hint"
+        app:defaultQueryHint="@string/search_hint"
+        android:theme="@style/AppTheme"
+        app:showAsAction="collapseActionView|ifRoom"
+        app:actionViewClass="android.widget.SearchView" />
 
 </menu>
