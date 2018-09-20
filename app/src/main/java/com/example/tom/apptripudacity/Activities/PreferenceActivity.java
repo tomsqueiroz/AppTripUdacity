@@ -2,9 +2,9 @@ package com.example.tom.apptripudacity.Activities;
 
 
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.tom.apptripudacity.R;
@@ -21,6 +21,12 @@ public class PreferenceActivity extends AppCompatActivity{
         if(actionBar != null){
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.actionbarpreference_menu, menu);
+        return true;
     }
 
     @Override

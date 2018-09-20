@@ -8,6 +8,7 @@ import android.support.v7.preference.EditTextPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceScreen;
+import android.support.v7.preference.SwitchPreferenceCompat;
 
 import com.example.tom.apptripudacity.R;
 
@@ -46,6 +47,9 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             if(p instanceof EditTextPreference){
                 String value = sharedPreferences.getString(p.getKey(), "");
                 p.setSummary(value);
+            }else if(p instanceof SwitchPreferenceCompat){
+                boolean value = sharedPreferences.getBoolean(p.getKey(), true);
+                ((SwitchPreferenceCompat) p).setChecked(value);
             }
         }
     }
@@ -60,6 +64,9 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             }else if (preference instanceof EditTextPreference) {
                 String value = sharedPreferences.getString(preference.getKey(), "");
                 preference.setSummary(value);
+            }else if(preference instanceof SwitchPreferenceCompat){
+                boolean value = sharedPreferences.getBoolean(preference.getKey(), true);
+                ((SwitchPreferenceCompat) preference).setChecked(value);
             }
         }
     }

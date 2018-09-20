@@ -9,12 +9,20 @@
 
     </item>
 
-    <item android:id="@+id/search"
+    <item
+        android:id="@+id/action_deleteall"
+        android:title="@string/action_deleteall"
+        app:showAsAction="never">
+
+    </item>
+
+    <item
+        android:id="@+id/search"
         android:title="@string/search_title"
         app:queryHint="@string/search_hint"
         app:defaultQueryHint="@string/search_hint"
         android:theme="@style/AppTheme"
-        app:showAsAction="collapseActionView|ifRoom"
+        app:showAsAction="ifRoom"
         app:actionViewClass="android.widget.SearchView" />
 
 </menu>
