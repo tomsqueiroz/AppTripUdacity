@@ -23,6 +23,6 @@
         app:defaultQueryHint="@string/search_hint"
         android:theme="@style/AppTheme"
         app:showAsAction="ifRoom"
-        app:actionViewClass="android.widget.SearchView" />
+        app:actionViewClass="android.support.v7.widget.SearchView" />
 
 </menu>

@@ -112,7 +112,8 @@ public class DetailsActivity extends AppCompatActivity implements OnMapReadyCall
 
             if(result.getOpeningHours() != null) {
                 openNow = result.getOpeningHours().getOpenNow();
-                tv_details_opennow.setText(openNow.toString());
+                if(openNow!=null)
+                    tv_details_opennow.setText(openNow.toString());
             }else{
                 tv_details_opennow.setText("Unknown");
             }
@@ -151,14 +152,11 @@ public class DetailsActivity extends AppCompatActivity implements OnMapReadyCall
                     Uri deleteUri = PlaceContract.PlaceEntry.buildPlaceUriWithId(placeId);
                     ContentResolver contentResolver = getContentResolver();
                     contentResolver.delete(deleteUri, null, null);
-
-
                 }
             }
         });
 
         callLoaderManager();
-
     }
 
     public void callLoaderManager(){

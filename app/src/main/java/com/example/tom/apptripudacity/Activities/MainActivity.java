@@ -24,6 +24,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -76,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements ResultsAdapter.Re
     GetDataService service;
 
 
+
     /***********************INDEX DO CURSOR*************/
     public static final int INDEX_ID_BANCO = 0;
     public static final int INDEX_NOME = 1;
@@ -107,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements ResultsAdapter.Re
         } else{
             if(NetworkUtils.connection_ok(this)) {
                 pb_main.setVisibility(View.VISIBLE);
-                getPlaces();
+                getPlaces(null);
             } else if(!NetworkUtils.connection_ok(this)){
                 Toast toast = Toast.makeText(this, "Sem Conexão com a Internet", Toast.LENGTH_SHORT);
                 toast.show();
@@ -167,10 +169,10 @@ public class MainActivity extends AppCompatActivity implements ResultsAdapter.Re
             Toast toast = Toast.makeText(this, "Sem Permissão de Localização", Toast.LENGTH_SHORT);
             toast.show();
             callLoaderManager();
-        } else{
+        } else if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED && sharedPreferences.getBoolean(getString(R.string.preference_location_key), true)){
 
             if(NetworkUtils.connection_ok(this)) {
-                getPlaces();
+                getPlaces(null);
 
             } else if(!NetworkUtils.connection_ok(this)){
                 Toast toast = Toast.makeText(this, "Sem Conexão com a Internet", Toast.LENGTH_SHORT);
@@ -185,72 +187,141 @@ public class MainActivity extends AppCompatActivity implements ResultsAdapter.Re
     }
 
 
-    private void getPlaces(){
+    private void getPlaces(String query){
 
-        editor = sharedPreferences.edit();
-        editor.putBoolean(getString(R.string.preference_location_key), true);
-        editor.apply();
 
-        Location location = null;
+        if(query==null){
+            editor = sharedPreferences.edit();
+            editor.putBoolean(getString(R.string.preference_location_key), true);
+            editor.apply();
 
-        try{
-            location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        }catch(SecurityException e){
-            e.printStackTrace();
-        }
+            Location location = null;
 
-        if(location != null) {
-            if(results != null)
-                results.clear();
-            double longitude = location.getLongitude();
-            double latitude = location.getLatitude();
-            map.put("location", latitude + "," + longitude);
-            map.put("radius", "5000");
+            try{
+                location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            }catch(SecurityException e){
+                e.printStackTrace();
+            }
 
-            Call<Example> call = service.getNearbyPlaces(map);
-            call.enqueue(new Callback<Example>() {
-                @Override
-                public void onResponse(Call<Example> call, Response<Example> response) {
-                    results = response.body().getResults();
-                    mResultsAdapter.setResultList(results);
-                    pb_main.setVisibility(View.INVISIBLE);
-                }
+            if(location != null) {
+                if(results != null)
+                    results.clear();
+                double longitude = location.getLongitude();
+                double latitude = location.getLatitude();
+                map.put("location", latitude + "," + longitude);
+                map.put("radius", "5000");
 
-                @Override
-                public void onFailure(Call<Example> call, Throwable t) {
-
-                    Toast toast = Toast.makeText(context, "Sem conexão com internet", Toast.LENGTH_SHORT);
-                    toast.show();
-
-                }
-            });
-        }else{
-            if(results != null)
-                results.clear();
-            double latitude =  -15.4647;
-            double longitude = -47.5547;
-            map.put("location", latitude + "," + longitude);
-            map.put("radius", "5000");
-
-            Call<Example> call = service.getNearbyPlaces(map);
-            call.enqueue(new Callback<Example>() {
-                @Override
-                public void onResponse(Call<Example> call, Response<Example> response) {
-                    results = response.body().getResults();
-                    if(results!=null){
+                Call<Example> call = service.getNearbyPlaces(map);
+                call.enqueue(new Callback<Example>() {
+                    @Override
+                    public void onResponse(Call<Example> call, Response<Example> response) {
+                        results = response.body().getResults();
                         mResultsAdapter.setResultList(results);
+                        pb_main.setVisibility(View.INVISIBLE);
                     }
-                    pb_main.setVisibility(View.INVISIBLE);
-                }
 
-                @Override
-                public void onFailure(Call<Example> call, Throwable t) {
+                    @Override
+                    public void onFailure(Call<Example> call, Throwable t) {
 
-                    Toast toast = Toast.makeText(context, "Sem conexão com internet", Toast.LENGTH_SHORT);
-                    toast.show();
+                        Toast toast = Toast.makeText(context, "Sem conexão com internet", Toast.LENGTH_SHORT);
+                        toast.show();
 
-                }
-            });
+                    }
+                });
+            }else{
+                if(results != null)
+                    results.clear();
+                double latitude =  -15.4647;
+                double longitude = -47.5547;
+                map.put("location", latitude + "," + longitude);
+                map.put("radius", "5000");
+
+                Call<Example> call = service.getNearbyPlaces(map);
+                call.enqueue(new Callback<Example>() {
+                    @Override
+                    public void onResponse(Call<Example> call, Response<Example> response) {
+                        results = response.body().getResults();
+                        if(results!=null){
+                            mResultsAdapter.setResultList(results);
+                        }
+                        pb_main.setVisibility(View.INVISIBLE);
+                    }
+
+                    @Override
+                    public void onFailure(Call<Example> call, Throwable t) {
+
+                        Toast toast = Toast.makeText(context, "Sem conexão com internet", Toast.LENGTH_SHORT);
+                        toast.show();
+
+                    }
+                });
+            }
+
+        }else{
+
+            Location location = null;
+
+            try{
+                location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            }catch(SecurityException e){
+                e.printStackTrace();
+            }
+
+            if(location != null) {
+                if(results != null)
+                    results.clear();
+                double longitude = location.getLongitude();
+                double latitude = location.getLatitude();
+                map.put("location", latitude + "," + longitude);
+                map.put("radius", "5000");
+                map.put("keyword", query);
+
+                Call<Example> call = service.getNearbyPlaces(map);
+                call.enqueue(new Callback<Example>() {
+                    @Override
+                    public void onResponse(Call<Example> call, Response<Example> response) {
+                        results = response.body().getResults();
+                        mResultsAdapter.setResultList(results);
+                        pb_main.setVisibility(View.INVISIBLE);
+                    }
+
+                    @Override
+                    public void onFailure(Call<Example> call, Throwable t) {
+
+                        Toast toast = Toast.makeText(context, "Sem conexão com internet", Toast.LENGTH_SHORT);
+                        toast.show();
+
+                    }
+                });
+            }else{
+                if(results != null)
+                    results.clear();
+                double latitude =  -15.4647;
+                double longitude = -47.5547;
+                map.put("location", latitude + "," + longitude);
+                map.put("radius", "5000");
+                map.put("keyword", query);
+
+                Call<Example> call = service.getNearbyPlaces(map);
+                call.enqueue(new Callback<Example>() {
+                    @Override
+                    public void onResponse(Call<Example> call, Response<Example> response) {
+                        results = response.body().getResults();
+                        if(results!=null){
+                            mResultsAdapter.setResultList(results);
+                        }
+                        pb_main.setVisibility(View.INVISIBLE);
+                    }
+
+                    @Override
+                    public void onFailure(Call<Example> call, Throwable t) {
+
+                        Toast toast = Toast.makeText(context, "Sem conexão com internet", Toast.LENGTH_SHORT);
+                        toast.show();
+
+                    }
+                });
+            }
         }
     }
 
@@ -262,7 +333,7 @@ public class MainActivity extends AppCompatActivity implements ResultsAdapter.Re
         if(requestCode == MY_PERMISSIONS_REQUEST_LOCATION){
             sharedPreferences = getSharedPreferences(getString(R.string.preference_location_key), Context.MODE_PRIVATE);
             if(NetworkUtils.connection_ok(this)){
-                getPlaces();
+                getPlaces(null);
             }else{
                 Toast toast = Toast.makeText(this, "Sem Conexão com a Internet", Toast.LENGTH_SHORT);
                 toast.show();
@@ -282,6 +353,35 @@ public class MainActivity extends AppCompatActivity implements ResultsAdapter.Re
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.actionbarmain_menu, menu);
+
+        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                results.clear();
+                mResultsAdapter.notifyDataSetChanged();
+
+                if(NetworkUtils.connection_ok(context)) {
+                    getPlaces(query);
+
+                } else if(!NetworkUtils.connection_ok(context)){
+                    Toast toast = Toast.makeText(context, "Sem Conexão com a Internet", Toast.LENGTH_SHORT);
+                    toast.show();
+                    callLoaderManager();
+                }
+                return  true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+
+
+        });
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -354,7 +454,7 @@ public class MainActivity extends AppCompatActivity implements ResultsAdapter.Re
                     location.setLng(data.getDouble(INDEX_LNG));
                     geometry.setLocation(location);
                     result.setGeometry(geometry);
-                    result.setId(data.getString(INDEX_ID_GOOGLE));
+                    result.setPlaceId(data.getString(INDEX_ID_GOOGLE));
                     List<Photo> photos = new ArrayList<>();
                     Photo photo = new Photo();
                     photo.setPhotoReference(data.getString(INDEX_PHOTOS));
@@ -364,9 +464,9 @@ public class MainActivity extends AppCompatActivity implements ResultsAdapter.Re
                     results.add(result);
                     data.moveToNext();
                 }
-                mResultsAdapter.setResultList(results);
             }
         }
+        mResultsAdapter.setResultList(results);
     }
 
     @Override
