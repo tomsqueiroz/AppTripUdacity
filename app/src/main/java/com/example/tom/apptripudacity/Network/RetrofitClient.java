@@ -1,4 +1,4 @@
-package com.example.tom.apptripudacity.NetworkUtils;
+package com.example.tom.apptripudacity.Network;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;

@@ -38,6 +38,12 @@
         <activity android:name=".Activities.PreferenceActivity" />
 
         <activity android:name=".Activities.DetailsActivity" />
+
+        <provider
+            android:name="com.example.tom.apptripudacity.Data.PlaceProvider"
+            android:authorities="com.example.tom.apptripudacity" />
     </application>
+
+
 
 </manifest>

@@ -21,6 +21,9 @@
     <string name="details_openinghours">Aberto agora:</string>
     <string name="details_rating">Avaliação:</string>
     <string name="details_button_question">Salvar offline</string>
-
+    <string name="dialog_message">Deseja apagar todos os locais?</string>
+    <string name="dialog_title">Alerta</string>
+    <string name="dialog_sim">Sim</string>
+    <string name="dialog_nao">Não</string>
 
 </resources>

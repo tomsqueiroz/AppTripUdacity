@@ -24,7 +24,7 @@ public class PlaceProvider extends ContentProvider {
         final String authority = PlaceContract.CONTENT_AUTHORITY;
 
         matcher.addURI(authority, PlaceContract.PATH_PLACE, CODE_PLACE);
-        matcher.addURI(authority, PlaceContract.PATH_PLACE + "/#", CODE_PLACE_WITH_ID);
+        matcher.addURI(authority, PlaceContract.PATH_PLACE + "/*", CODE_PLACE_WITH_ID);
 
         return matcher;
     }
@@ -128,6 +128,7 @@ public class PlaceProvider extends ContentProvider {
                         PlaceContract.PlaceEntry.TABLE_NAME,
                         PlaceContract.PlaceEntry.COLUMN_PLACE_ID + " =? ",
                         selectionArguments);
+                break;
 
 
             default:

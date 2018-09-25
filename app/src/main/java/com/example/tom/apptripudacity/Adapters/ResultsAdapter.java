@@ -16,13 +16,14 @@ import com.example.tom.apptripudacity.Models.Result;
 import com.example.tom.apptripudacity.R;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ResultsAdapterViewHolder> {
 
     private final ResultsAdapterOnClickHandler mClickHandler;
     private Context context;
-    private List<Result> results;
+    private List<Result> results = new ArrayList<>();
     private static final String BASE_URL = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=600&maxheight=600&key=AIzaSyAlUvgTV9PolnqpyWUQpMd296BGOJQBY3E&photoreference=";
 
     @NonNull
@@ -39,9 +40,12 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ResultsA
 
     @Override
     public void onBindViewHolder(@NonNull ResultsAdapterViewHolder holder, int position) {
-        String photoReference = results.get(position).getPhotos().get(0).getPhotoReference();
-        Picasso.with(context).load(BASE_URL + photoReference).into(holder.imageView);
-
+        if(results!=null){
+            if(results.get(position).getPhotos()!=null && !results.get(position).getPhotos().isEmpty()){
+                String photoReference = results.get(position).getPhotos().get(0).getPhotoReference();
+                 Picasso.with(context).load(BASE_URL + photoReference).into(holder.imageView);
+            }
+        }
     }
 
     @Override
@@ -80,7 +84,4 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ResultsA
         this.results = resultList;
         notifyDataSetChanged();
     }
-
-
-
 }
