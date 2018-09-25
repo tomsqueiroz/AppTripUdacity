@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">AppTripUdacity</string>
+    <string name="search_hint">Aonde quer ir?</string>
+    <string name="action_settings">Configurações</string>
+    <string name="action_search">action_search</string>
+    <string name="action_addtodb">Adicionar offline</string>
+    <string name="action_deleteall">Apagar locais salvos</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="preference_name_title">Seu nome</string>
+    <string name="preference_name_key">pref_nome</string>
+    <string name="preference_name_description">Como podemos te chamar?</string>
+    <string name="preference_location_title">Localização</string>
+    <string name="preference_location_key">pref_location</string>
+    <string name="preference_delete_key">pref_delete</string>
+    <string name="preference_delete_title">Apagar locais salvos</string>
+    <string name="preference_delete_detail">Esta opção apaga todos os locais já salvos no seu celular.</string>
+    <string name="search_title">search</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="details_title">Detalhes</string>
+    <string name="details_nome">Nome:</string>
+    <string name="details_openinghours">Aberto agora:</string>
+    <string name="details_rating">Avaliação:</string>
+    <string name="details_button_question">Salvar offline</string>
+    <string name="dialog_message">Deseja apagar todos os locais?</string>
+    <string name="dialog_title">Alerta</string>
+    <string name="dialog_sim">Sim</string>
+    <string name="dialog_nao">Não</string>
+
+</resources>
