@@ -25,5 +25,7 @@
     <string name="dialog_title">Alerta</string>
     <string name="dialog_sim">Sim</string>
     <string name="dialog_nao">Não</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 
 </resources>
