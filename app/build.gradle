@@ -5,7 +5,7 @@ android {
         config {
             keyAlias 'key_tom'
             keyPassword '16000404'
-            storeFile file('D:/Android Studio/tom_key_store.jks')
+            storeFile file('tom_key_store.jks')
             storePassword 'nometom1996'
         }
     }
