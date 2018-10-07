@@ -42,6 +42,7 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ResultsA
     public void onBindViewHolder(@NonNull ResultsAdapterViewHolder holder, int position) {
         if(results!=null){
             if(results.get(position).getPhotos()!=null && !results.get(position).getPhotos().isEmpty()){
+                holder.imageView.setContentDescription(results.get(position).getName());
                 String photoReference = results.get(position).getPhotos().get(0).getPhotoReference();
                  Picasso.with(context).load(BASE_URL + photoReference).into(holder.imageView);
             }
