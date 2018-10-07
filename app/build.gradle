@@ -1,6 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'key_tom'
+            keyPassword '16000404'
+            storeFile file('D:/Android Studio/tom_key_store.jks')
+            storePassword 'nometom1996'
+        }
+    }
     compileSdkVersion 27
     defaultConfig {
         applicationId "com.example.tom.apptripudacity"
@@ -18,7 +26,6 @@ android {
         }
     }
     flavorDimensions "mode"
-
     productFlavors {
         free {
             dimension "mode"
@@ -30,11 +37,10 @@ android {
             applicationId "com.example.tom.apptripudacity.paid"
         }
     }
-
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
     implementation 'com.android.support:support-v4:27.1.1'
@@ -54,6 +60,4 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0'
     compile 'com.facebook.stetho:stetho:1.5.0'
-
-
 }
