@@ -13,6 +13,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -124,6 +125,13 @@ public class MainActivity extends AppCompatActivity implements ResultsAdapter.Re
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+        int position = mRecycleView.getLayoutManager().getPosition(mRecycleView);
+        outState.putInt("position", position);
+    }
+
+    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
@@ -189,6 +197,10 @@ public class MainActivity extends AppCompatActivity implements ResultsAdapter.Re
                 toast.show();
                 callLoaderManager();
             }
+        }
+
+        if(savedInstanceState != null && mRecycleView != null){
+            mRecycleView.smoothScrollToPosition(savedInstanceState.getInt("position"));
         }
     }
 
