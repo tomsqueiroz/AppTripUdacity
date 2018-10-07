@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements ResultsAdapter.Re
         mResultsAdapter.notifyDataSetChanged();
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         if(!sharedPreferences.getBoolean(getString(R.string.preference_location_key), true)) {
-            Toast toast = Toast.makeText(this, "Sem Permissão de Localização", Toast.LENGTH_SHORT);
+            Toast toast = Toast.makeText(this, getString(R.string.sem_internet), Toast.LENGTH_SHORT);
             toast.show();
             callLoaderManager();
         } else{
@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements ResultsAdapter.Re
                 pb_main.setVisibility(View.VISIBLE);
                 getPlaces(null);
             } else if(!NetworkUtils.connection_ok(this)){
-                Toast toast = Toast.makeText(this, "Sem Conexão com a Internet", Toast.LENGTH_SHORT);
+                Toast toast = Toast.makeText(this, getString(R.string.sem_internet), Toast.LENGTH_SHORT);
                 toast.show();
                 callLoaderManager();
             }
@@ -176,7 +176,7 @@ public class MainActivity extends AppCompatActivity implements ResultsAdapter.Re
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     MY_PERMISSIONS_REQUEST_LOCATION);
         }else if(!sharedPreferences.getBoolean(getString(R.string.preference_location_key), true)) {
-            Toast toast = Toast.makeText(this, "Sem Permissão de Localização", Toast.LENGTH_SHORT);
+            Toast toast = Toast.makeText(this, getString(R.string.sem_permissao_gps), Toast.LENGTH_SHORT);
             toast.show();
             callLoaderManager();
         } else if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED && sharedPreferences.getBoolean(getString(R.string.preference_location_key), true)){
@@ -185,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements ResultsAdapter.Re
                 getPlaces(null);
 
             } else if(!NetworkUtils.connection_ok(this)){
-                Toast toast = Toast.makeText(this, "Sem Conexão com a Internet", Toast.LENGTH_SHORT);
+                Toast toast = Toast.makeText(this, getString(R.string.sem_internet), Toast.LENGTH_SHORT);
                 toast.show();
                 callLoaderManager();
             }
@@ -233,7 +233,7 @@ public class MainActivity extends AppCompatActivity implements ResultsAdapter.Re
                     @Override
                     public void onFailure(Call<Example> call, Throwable t) {
 
-                        Toast toast = Toast.makeText(context, "Sem conexão com internet", Toast.LENGTH_SHORT);
+                        Toast toast = Toast.makeText(context, getString(R.string.sem_internet), Toast.LENGTH_SHORT);
                         toast.show();
 
                     }
@@ -260,7 +260,7 @@ public class MainActivity extends AppCompatActivity implements ResultsAdapter.Re
                     @Override
                     public void onFailure(Call<Example> call, Throwable t) {
 
-                        Toast toast = Toast.makeText(context, "Sem conexão com internet", Toast.LENGTH_SHORT);
+                        Toast toast = Toast.makeText(context, getString(R.string.sem_internet), Toast.LENGTH_SHORT);
                         toast.show();
 
                     }
@@ -298,7 +298,7 @@ public class MainActivity extends AppCompatActivity implements ResultsAdapter.Re
                     @Override
                     public void onFailure(Call<Example> call, Throwable t) {
 
-                        Toast toast = Toast.makeText(context, "Sem conexão com internet", Toast.LENGTH_SHORT);
+                        Toast toast = Toast.makeText(context, getString(R.string.sem_internet), Toast.LENGTH_SHORT);
                         toast.show();
 
                     }
@@ -326,7 +326,7 @@ public class MainActivity extends AppCompatActivity implements ResultsAdapter.Re
                     @Override
                     public void onFailure(Call<Example> call, Throwable t) {
 
-                        Toast toast = Toast.makeText(context, "Sem conexão com internet", Toast.LENGTH_SHORT);
+                        Toast toast = Toast.makeText(context, getString(R.string.sem_internet), Toast.LENGTH_SHORT);
                         toast.show();
 
                     }
@@ -345,7 +345,7 @@ public class MainActivity extends AppCompatActivity implements ResultsAdapter.Re
             if(NetworkUtils.connection_ok(this)){
                 getPlaces(null);
             }else{
-                Toast toast = Toast.makeText(this, "Sem Conexão com a Internet", Toast.LENGTH_SHORT);
+                Toast toast = Toast.makeText(this, getString(R.string.sem_internet), Toast.LENGTH_SHORT);
                 toast.show();
 
             }
@@ -354,7 +354,7 @@ public class MainActivity extends AppCompatActivity implements ResultsAdapter.Re
             editor = sharedPreferences.edit();
             editor.putBoolean(getString(R.string.preference_location_key), false);
             editor.apply();
-            Toast toast = Toast.makeText(this, "Sem Permissão de Localização", Toast.LENGTH_SHORT);
+            Toast toast = Toast.makeText(this, getString(R.string.sem_permissao_gps), Toast.LENGTH_SHORT);
             toast.show();
             callLoaderManager();
             }
@@ -377,7 +377,7 @@ public class MainActivity extends AppCompatActivity implements ResultsAdapter.Re
                     getPlaces(query);
 
                 } else if(!NetworkUtils.connection_ok(context)){
-                    Toast toast = Toast.makeText(context, "Sem Conexão com a Internet", Toast.LENGTH_SHORT);
+                    Toast toast = Toast.makeText(context, getString(R.string.sem_internet), Toast.LENGTH_SHORT);
                     toast.show();
                     callLoaderManager();
                 }
@@ -443,7 +443,7 @@ public class MainActivity extends AppCompatActivity implements ResultsAdapter.Re
                         null);
 
             default:
-                throw new RuntimeException("Unknown Loader: " + id);
+                throw new RuntimeException(getString(R.string.unknown_loader) + id);
 
         }
     }

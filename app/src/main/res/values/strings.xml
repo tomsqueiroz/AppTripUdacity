@@ -27,5 +27,10 @@
     <string name="dialog_nao">Não</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
+    <string name="unknown_text">Unknown</string>
+    <string name="sem_internet">Sem conexão com a internet</string>
+    <string name="sem_permissao_gps">Sem Permissão de Localização</string>
+    <string name="unknown_loader">Uknown Loader </string>
+    <string name="marcador_em_text">Marcador em </string>
 
 </resources>

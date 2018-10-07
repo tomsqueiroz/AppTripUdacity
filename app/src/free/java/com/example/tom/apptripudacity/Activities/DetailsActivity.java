@@ -125,7 +125,7 @@ public class DetailsActivity extends AppCompatActivity implements OnMapReadyCall
                 if(openNow!=null)
                     tv_details_opennow.setText(openNow.toString());
             }else{
-                tv_details_opennow.setText("Unknown");
+                tv_details_opennow.setText(getString(R.string.unknown_text));
             }
 
             rating = result.getRating();
@@ -133,7 +133,7 @@ public class DetailsActivity extends AppCompatActivity implements OnMapReadyCall
                 tv_details_rating.setText(Float.toString(rating));
 
             }else{
-                tv_details_rating.setText("Unknown");
+                tv_details_rating.setText(getString(R.string.unknown_text));
             }
 
         }
@@ -179,7 +179,7 @@ public class DetailsActivity extends AppCompatActivity implements OnMapReadyCall
         mMap = googleMap;
 
         LatLng location = new LatLng(lat, lng);
-        mMap.addMarker(new MarkerOptions().position(location).title("Marcador em " + name));
+        mMap.addMarker(new MarkerOptions().position(location).title(getString(R.string.marcador_em_text) + name));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 25));
 
     }
@@ -232,7 +232,7 @@ public class DetailsActivity extends AppCompatActivity implements OnMapReadyCall
                         null);
 
             default:
-                throw new RuntimeException("Unknown Loader: " + id);
+                throw new RuntimeException(getString(R.string.unknown_loader) + id);
 
 
         }
