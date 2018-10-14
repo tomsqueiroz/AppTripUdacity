@@ -34,12 +34,14 @@ import android.widget.Toast;
 
 import com.example.tom.apptripudacity.Adapters.ResultsAdapter;
 import com.example.tom.apptripudacity.Data.PlaceContract;
+import com.example.tom.apptripudacity.Interfaces.AsyncTaskDelegate;
 import com.example.tom.apptripudacity.Interfaces.GetDataService;
 import com.example.tom.apptripudacity.Models.Example;
 import com.example.tom.apptripudacity.Models.Geometry;
 import com.example.tom.apptripudacity.Models.Photo;
 import com.example.tom.apptripudacity.Models.Result;
 import com.example.tom.apptripudacity.Network.NetworkUtils;
+import com.example.tom.apptripudacity.Network.ResultsService;
 import com.example.tom.apptripudacity.Network.RetrofitClient;
 import com.example.tom.apptripudacity.R;
 import com.facebook.stetho.Stetho;
@@ -63,8 +65,7 @@ import retrofit2.Response;
  */
 
 
-public class MainActivity extends AppCompatActivity implements ResultsAdapter.ResultsAdapterOnClickHandler, LoaderManager.LoaderCallbacks<Cursor> {
-
+public class MainActivity extends AppCompatActivity implements ResultsAdapter.ResultsAdapterOnClickHandler, LoaderManager.LoaderCallbacks<Cursor>, AsyncTaskDelegate {
     private RecyclerView mRecycleView;
     private ResultsAdapter mResultsAdapter;
     private LinearLayoutManager layoutManager;
@@ -232,24 +233,9 @@ public class MainActivity extends AppCompatActivity implements ResultsAdapter.Re
                 double latitude = location.getLatitude();
                 map.put("location", latitude + "," + longitude);
                 map.put("radius", "5000");
+                //VER SE VAI FUNCIONAR
+                new ResultsService(this,this).execute(map);
 
-                Call<Example> call = service.getNearbyPlaces(map);
-                call.enqueue(new Callback<Example>() {
-                    @Override
-                    public void onResponse(Call<Example> call, Response<Example> response) {
-                        results = response.body().getResults();
-                        mResultsAdapter.setResultList(results);
-                        pb_main.setVisibility(View.INVISIBLE);
-                    }
-
-                    @Override
-                    public void onFailure(Call<Example> call, Throwable t) {
-
-                        Toast toast = Toast.makeText(context, getString(R.string.sem_internet), Toast.LENGTH_SHORT);
-                        toast.show();
-
-                    }
-                });
             }else{
                 if(results != null)
                     results.clear();
@@ -495,5 +481,11 @@ public class MainActivity extends AppCompatActivity implements ResultsAdapter.Re
     public void onLoaderReset(@NonNull Loader<Cursor> loader) {
         results.clear();
         mResultsAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void processFinish(Object output) {
+        mResultsAdapter.setResultList((List<Result>) output);
+        pb_main.setVisibility(View.INVISIBLE);
     }
 }
