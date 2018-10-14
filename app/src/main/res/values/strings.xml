@@ -32,5 +32,6 @@
     <string name="sem_permissao_gps">Sem Permissão de Localização</string>
     <string name="unknown_loader">Uknown Loader </string>
     <string name="marcador_em_text">Marcador em </string>
+    <string name="db_vazio_aviso">Banco de Dados Vazio</string>
 
 </resources>

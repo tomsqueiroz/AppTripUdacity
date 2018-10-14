@@ -43,10 +43,6 @@
             android:authorities="com.example.tom.apptripudacity"
             android:exported="false"/>
 
-        <service
-            android:name=".Widget.ListWidgetService"
-            android:permission="android.permission.BIND_REMOTEVIEWS" />
-
 
         <receiver android:name=".Widget.PlaceWidgetProvider">
             <intent-filter>

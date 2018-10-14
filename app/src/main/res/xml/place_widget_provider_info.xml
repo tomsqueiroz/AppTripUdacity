@@ -3,7 +3,7 @@
     android:initialKeyguardLayout="@layout/place_widget"
     android:initialLayout="@layout/place_widget"
     android:minHeight="40dp"
-    android:minWidth="40dp"
+    android:minWidth="70dp"
     android:resizeMode="horizontal|vertical"
     android:updatePeriodMillis="86400000">
 
